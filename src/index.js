@@ -20,7 +20,8 @@ module.exports = function (filename, opts) {
   });
   return ffmpeg(filename)
     .inputOption('-stream_loop', -1)
-    .videoFilter('setpts=PTS-STARTPTS')
+    .videoFilter('setpts=N/(FRAME_RATE*TB)')
+    .noAudio()
     .outputFormat('rawvideo')
     .outputOption('-vcodec', 'rawvideo')
     .outputOption('-pix_fmt', 'rgba')
