@@ -3,20 +3,42 @@
 > Instantiate ffmpeg in looping mode.
 
 ## Purpose
-- What problem does this module solve? At least a few sentences.
-PLEASE_FILL_IN_HERE
+Uses fluent-ffmpeg to instantiate an ffmpeg proc in looping mode
 
 ## Usage
 
 ```js
-// Several examples of usage.
-// Usually copying and pasting code from the tests and making the code standalone suffices.
-// PLEASE_FILL_IN_HERE
+const expect = require('expect.js');
+const opts = { height: 100, width: 100, fps: 30 };
+const command = ffmpegLoop('path/to/file', opts);
+expect(command).to.be.ok();
+expect(command.pipe).to.be.ok();
+command.pipe(fs.createReadableStream(/*..*/));
+/*..*/
+command.kill();
+
 ```
 
 ## API
 
-PLEASE_FILL_IN_HERE
+
+<a name="module_ffmpeg-loop"></a>
+
+## ffmpeg-loop
+<a name="exp_module_ffmpeg-loop--module.exports"></a>
+
+### module.exports(filename) ⇒ ⏏
+Creates an infinitely looping readable stream from a video.
+
+**Kind**: Exported function
+**Returns**: A fluent ffmpeg process - has pipe() method.
+
+| Param | Type | Description |
+| --- | --- | --- |
+| filename | <code>string</code> | path to video |
+| opts.fps | <code>integer</code> |  |
+| opts.width | <code>integer</code> |  |
+| opts.height | <code>integer</code> |  |
 
 Note: To regenerate this section from the jsdoc run `npm run docs` and paste
 the output above.
