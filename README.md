@@ -21,14 +21,19 @@ command.kill();
 
 ## API
 
-
 <a name="module_ffmpeg-loop"></a>
 
 ## ffmpeg-loop
+
+* [ffmpeg-loop](#module_ffmpeg-loop)
+    * [module.exports(filename)](#exp_module_ffmpeg-loop--module.exports) ⇒ ⏏
+        * [~applyCrop(ffmpeg)](#module_ffmpeg-loop--module.exports..applyCrop) ⇒
+
 <a name="exp_module_ffmpeg-loop--module.exports"></a>
 
 ### module.exports(filename) ⇒ ⏏
 Creates an infinitely looping readable stream from a video.
+Note: All crop dimensions are for the original video size (not the output size).
 
 **Kind**: Exported function
 **Returns**: A fluent ffmpeg process - has pipe() method.
@@ -37,8 +42,29 @@ Creates an infinitely looping readable stream from a video.
 | --- | --- | --- |
 | filename | <code>string</code> | path to video |
 | opts.fps | <code>integer</code> |  |
-| opts.width | <code>integer</code> |  |
-| opts.height | <code>integer</code> |  |
+| opts.width | <code>integer</code> | output width |
+| opts.height | <code>integer</code> | output height |
+| opts.cropWidth | <code>integer</code> | crop width (width and height are required). |
+| opts.cropHeight | <code>integer</code> | crop height |
+| opts.cropX | <code>integer</code> | crop x (x and y are optional. If not set, the   default is the center position of the video). |
+| opts.cropY | <code>integer</code> | crop y |
+
+<a name="module_ffmpeg-loop--module.exports..applyCrop"></a>
+
+#### module.exports~applyCrop(ffmpeg) ⇒
+Apply a crop filter (if required) to the ffmpeg command based on provided opts.
+All crop dimensions are for the original video size (not the output size).
+
+**Kind**: inner method of [<code>module.exports</code>](#exp_module_ffmpeg-loop--module.exports)
+**Returns**: modified fluent ffmpeg process
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ffmpeg |  | process |
+| opts.cropWidth | <code>integer</code> | crop width (width and height are required). |
+| opts.cropHeight | <code>integer</code> | crop height |
+| opts.cropX | <code>integer</code> | crop x (x and y are optional. If not set, the   default is the center position of the video). |
+| opts.cropY | <code>integer</code> | crop y |
 
 Note: To regenerate this section from the jsdoc run `npm run docs` and paste
 the output above.
