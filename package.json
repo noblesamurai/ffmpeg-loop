@@ -1,7 +1,7 @@
 {
   "name": "ffmpeg-loop",
   "description": "Instantiate ffmpeg in looping mode.",
-  "version": "1.1.0-crop.0",
+  "version": "1.1.0-crop.1",
   "author": "Tim Allen <tim@noblesamurai.com>",
   "license": "BSD",
   "main": "src/index.js",
