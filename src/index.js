@@ -25,10 +25,11 @@ module.exports = function (filename, opts) {
   ['height', 'width', 'fps'].forEach((key) => {
     assert(!isNaN(opts[key]), `${key} should be number - got ${opts[key]}`);
   });
-  let command = ffmpeg(filename)
+  const command = ffmpeg(filename)
     .inputOption('-stream_loop', -1)
     .videoFilter('setpts=N/(FRAME_RATE*TB)')
     .noAudio()
+    .outputFormat('rawvideo')
     .outputOption('-vcodec', 'rawvideo')
     .outputOption('-pix_fmt', 'rgba')
     .outputOption('-s', `${opts.width}x${opts.height}`)
