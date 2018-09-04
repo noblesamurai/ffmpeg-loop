@@ -41,6 +41,7 @@ module.exports = function (filename, opts) {
  * Apply a crop filter (if required) to the ffmpeg command based on provided opts.
  * All crop dimensions are for the original video size (not the output size).
  *
+ * @private
  * @param ffmpeg process
  * @param {integer} opts.cropWidth - crop width (width and height are required).
  * @param {integer} opts.cropHeight - crop height
