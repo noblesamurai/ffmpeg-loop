@@ -25,7 +25,8 @@
     "npm": "5.x"
   },
   "dependencies": {
-    "fluent-ffmpeg": "^2.1.2"
+    "fluent-ffmpeg": "^2.1.2",
+    "lodash.last": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
