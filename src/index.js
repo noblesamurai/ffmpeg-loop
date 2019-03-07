@@ -7,8 +7,9 @@ const assert = require('assert');
 ffmpeg.setFfmpegPath(require('ffmpeg-static').path);
 
 /**
- * Creates an infinitely looping readable stream from a video.
- * Note: All crop dimensions are for the original video size (not the output size).
+ * Creates an ffmpeg command to loop a video.
+ * Note: All crop dimensions are for the original video size (not the output
+ * size).
  *
  * @param {string} filename - path to video
  * @param {integer} opts.fps
@@ -19,13 +20,19 @@ ffmpeg.setFfmpegPath(require('ffmpeg-static').path);
  * @param {integer} opts.cropX - crop x (x and y are optional. If not set, the
  *   default is the center position of the video).
  * @param {integer} opts.cropY - crop y
+ * @param {float} opts.start - seek to this time before starting. Must be less
+ * than video length.
  * @returns A fluent ffmpeg process - has pipe() method.
  */
 module.exports = function (filename, opts) {
   ['height', 'width', 'fps'].forEach((key) => {
     assert(!isNaN(opts[key]), `${key} should be number - got ${opts[key]}`);
   });
-  const command = ffmpeg(filename)
+  const { start = 0 } = opts;
+  const command = ffmpeg()
+    .input(filename)
+    .inputOption('-ss', start)
+    .input(filename)
     .inputOption('-stream_loop', -1)
     .videoFilter('setpts=N/(FRAME_RATE*TB)')
     .noAudio()
