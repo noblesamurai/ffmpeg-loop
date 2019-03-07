@@ -30,6 +30,8 @@ module.exports = function (filename, opts) {
   });
   const { start = 0 } = opts;
   const command = ffmpeg()
+    // Using -ss and -stream_loop together does not work well, so we have a
+    // single non-looped version first to seek on.
     .input(filename)
     .inputOption('-ss', start)
     .input(filename)
