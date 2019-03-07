@@ -38,6 +38,7 @@ module.exports = function (filename, opts) {
     .inputOption('-stream_loop', -1)
     .videoFilter('setpts=N/(FRAME_RATE*TB)')
     .noAudio()
+    .complexFilter(['[0:v:0][1:v:0]concat=n=2:v=1:a=0[outv]'], 'outv')
     .outputFormat('rawvideo')
     .outputOption('-vcodec', 'rawvideo')
     .outputOption('-pix_fmt', 'rgba')
