@@ -43,6 +43,7 @@ Note: All crop dimensions are for the original video size (not the output size).
 | opts.cropHeight | <code>integer</code> | crop height |
 | opts.cropX | <code>integer</code> | crop x (x and y are optional. If not set, the   default is the center position of the video). |
 | opts.cropY | <code>integer</code> | crop y |
+| opts.start | <code>float</code> | seek to this time before starting. Must be less than video length.|
 
 Note: To regenerate this section from the jsdoc run `npm run docs` and paste
 the output above.
