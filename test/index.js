@@ -13,8 +13,19 @@ describe('ffmpeg loop', function () {
 
   it('should apply a crop filter', function (done) {
     this.timeout(5000); // this takes a long time on travis for some reason?
-    const opts = { height: 28, width: 50, fps: 30, cropWidth: 12, cropHeight: 24, cropX: 0, cropY: 0 };
-    const command = ffmpegLoop(path.join(__dirname, 'fixtures/user_video-30.mp4'), opts);
+    const opts = {
+      height: 28,
+      width: 50,
+      fps: 30,
+      cropWidth: 12,
+      cropHeight: 24,
+      cropX: 0,
+      cropY: 0
+    };
+    const command = ffmpegLoop(
+      path.join(__dirname, 'fixtures/user_video-30.mp4'),
+      opts
+    );
     command.once('start', cmd => {
       try {
         console.log(cmd);

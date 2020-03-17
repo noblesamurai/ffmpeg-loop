@@ -26,15 +26,12 @@ ffmpeg.setFfmpegPath(require('ffmpeg-static').path);
  * @returns A fluent ffmpeg process - has pipe() method.
  */
 module.exports = function (filename, opts) {
-  ['height', 'width', 'fps'].forEach((key) => {
+  ['height', 'width', 'fps'].forEach(key => {
     assert(!isNaN(opts[key]), `${key} should be number - got ${opts[key]}`);
   });
   const { start = 0 } = opts;
   const filters = [
-    { filter: 'concat',
-      options: { n: 2, v: 1, a: 0 },
-      outputs: 'concat'
-    },
+    { filter: 'concat', options: { n: 2, v: 1, a: 0 }, outputs: 'concat' },
     {
       filter: 'setpts',
       inputs: 'concat',
@@ -73,8 +70,8 @@ module.exports = function (filename, opts) {
  */
 function applyCrop (filters, opts) {
   const { cropWidth, cropHeight, cropX, cropY } = opts;
-  if (!cropWidth || isNaN(cropWidth) || !cropHeight || isNaN(cropHeight)) return;
-  const crop = [ cropWidth, cropHeight ];
+  if (!cropWidth || isNaN(cropWidth) || !cropHeight || isNaN(cropHeight)) { return; }
+  const crop = [cropWidth, cropHeight];
   if (!isNaN(cropX) && !isNaN(cropY)) crop.push(cropX, cropY);
   last(filters).outputs = 'toCrop';
   return filters.push({
