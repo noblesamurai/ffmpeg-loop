@@ -64,7 +64,8 @@ describe('ffmpeg loop', function () {
       fps: 30,
       height: 28,
       loop: false,
-      width: 50
+      width: 50,
+      start: 30
     };
     const command = ffmpegLoop(
       path.join(__dirname, 'fixtures/user_video-30.mp4'),
