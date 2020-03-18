@@ -29,7 +29,7 @@ ffmpeg.setFfmpegPath(require('ffmpeg-static').path);
  */
 module.exports = function (filename, opts) {
   ow(opts, ow.object.partialShape({
-    fps: ow.number.integer,
+    fps: ow.number,
     height: ow.number.integer,
     width: ow.number.integer
   }));
