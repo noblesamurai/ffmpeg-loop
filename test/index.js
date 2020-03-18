@@ -52,7 +52,7 @@ describe('ffmpeg loop', function () {
     expect(cmd).to.match(/crop=12:24:0:0/);
     expect(cmd).to.match(/stream_loop/);
 
-    const data = pEvent(stream, 'data');
+    const data = await pEvent(stream, 'data');
     expect(data).to.be.ok();
     command.kill();
     await pEvent(command, 'error');
@@ -74,7 +74,7 @@ describe('ffmpeg loop', function () {
     const { cmd, stream } = await start(command);
     expect(cmd).to.not.match(/stream_loop/);
 
-    const data = pEvent(stream, 'data');
+    const data = await pEvent(stream, 'data');
     expect(data).to.be.ok();
     command.kill();
     await pEvent(command, 'error');
