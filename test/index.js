@@ -35,6 +35,7 @@ describe('ffmpeg loop', function () {
   });
 
   it('should apply a crop filter', async function () {
+    this.timeout(5000);
     const opts = {
       height: 28,
       width: 50,
