@@ -21,9 +21,12 @@
     "url": "https://github.com/noblesamurai/ffmpeg-loop/issues"
   },
   "engines": {
-    "node": "8.x",
-    "npm": "5.x"
+    "node": "^10 || ^12",
+    "npm": "6.x"
   },
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
     "lodash.last": "^3.0.0",
