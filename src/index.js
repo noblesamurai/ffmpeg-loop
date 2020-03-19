@@ -41,7 +41,10 @@ module.exports = function (filename, opts) {
       inputs: 'concat',
       options: 'N/(FRAME_RATE*TB)'
     }
-  ] : [];
+  ] : [
+    // repeat last frame forever if not looping
+    { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }
+  ];
   const command = ffmpeg()
     // Using -ss and -stream_loop together does not work well, so we have a
     // single non-looped version first to seek on.
