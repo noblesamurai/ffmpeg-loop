@@ -3,6 +3,7 @@
  */
 
 const cropFilter = require('./crop');
+const debug = require('debug');
 const ffmpeg = require('fluent-ffmpeg');
 const last = require('lodash.last');
 const ow = require('ow');
@@ -67,5 +68,6 @@ module.exports = function (filename, opts) {
     filters.push(crop);
   }
   if (filters.length) command.complexFilter(filters);
+  command.once('start', debug);
   return command;
 };

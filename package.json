@@ -28,6 +28,7 @@
     "src"
   ],
   "dependencies": {
+    "debug": "^4.1.1",
     "fluent-ffmpeg": "^2.1.2",
     "lodash.last": "^3.0.0",
     "ow": "^0.17.0"
