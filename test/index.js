@@ -59,14 +59,14 @@ describe('ffmpeg loop', function () {
     await pEvent(command, 'error');
   });
 
-  it('allows you to not loop if you so desire', async function () {
+  it('allows you to NOT loop, but you can still go past the end.', async function () {
     this.timeout(5000);
     const opts = {
       fps: 30,
       height: 28,
       loop: false,
       width: 50,
-      start: 30
+      start: 29.9
     };
     const command = ffmpegLoop(
       path.join(__dirname, 'fixtures/user_video-30.mp4'),
@@ -76,6 +76,9 @@ describe('ffmpeg loop', function () {
     const { cmd, stream } = await start(command);
     expect(cmd).to.not.match(/stream_loop/);
 
+    for (let i = 0; i < 100; i++) {
+      await pEvent(stream, 'data');
+    }
     const data = await pEvent(stream, 'data');
     expect(data).to.be.ok();
     command.kill();
