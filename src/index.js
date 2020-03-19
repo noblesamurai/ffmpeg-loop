@@ -16,15 +16,16 @@ ffmpeg.setFfmpegPath(require('ffmpeg-static'));
  * size).
  *
  * @param {string} filename - path to video
- * @param {integer} opts.fps
- * @param {integer} opts.width - output width
- * @param {integer} opts.height - output height
- * @param {integer} opts.cropWidth - crop width (width and height are required).
  * @param {integer} opts.cropHeight - crop height
+ * @param {integer} opts.cropWidth - crop width (width and height are required).
  * @param {integer} opts.cropX - crop x (x and y are optional. If not set, the
  *   default is the center position of the video).
  * @param {integer} opts.cropY - crop y
+ * @param {integer} opts.fps
+ * @param {integer} opts.height - output height
+ * @param {boolean} opts.loop - whether to loop the source clip (defaults to true)
  * @param {float} opts.start - seek to this time before starting. Must be less
+ * @param {integer} opts.width - output width
  * than video length.
  * @returns A fluent ffmpeg process - has pipe() method.
  */
