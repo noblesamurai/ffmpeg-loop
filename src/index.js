@@ -3,7 +3,7 @@
  */
 
 const cropFilter = require('./crop');
-const debug = require('debug');
+const debug = require('debug')('ffmpeg-loop');
 const ffmpeg = require('fluent-ffmpeg');
 const last = require('lodash.last');
 const ow = require('ow');
