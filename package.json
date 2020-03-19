@@ -36,7 +36,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "dirty-chai": "^1.2.2",
-    "ffmpeg-static": "^2.1.0",
+    "ffmpeg-static": "^4.0.1",
     "jsdoc-to-markdown": "~3.0.0",
     "mocha": "^7.1.0",
     "nyc": "^10.1.2",
@@ -44,7 +44,7 @@
     "semistandard": "*"
   },
   "peerDependencies": {
-    "ffmpeg-static": "^2.1.0"
+    "ffmpeg-static": "^4"
   },
   "keywords": [],
   "nyc": {

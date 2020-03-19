@@ -8,7 +8,7 @@ const ffmpeg = require('fluent-ffmpeg');
 const last = require('lodash.last');
 const ow = require('ow');
 
-ffmpeg.setFfmpegPath(require('ffmpeg-static').path);
+ffmpeg.setFfmpegPath(require('ffmpeg-static'));
 
 /**
  * Creates an ffmpeg command to loop a video.
