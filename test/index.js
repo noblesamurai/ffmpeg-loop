@@ -59,6 +59,32 @@ describe('ffmpeg loop', function () {
     await pEvent(command, 'error');
   });
 
+  it('should apply a crop filter & not loop ok', async function () {
+    this.timeout(5000);
+    const opts = {
+      height: 28,
+      width: 50,
+      fps: 30,
+      cropWidth: 12,
+      cropHeight: 24,
+      cropX: 0,
+      cropY: 0,
+      loop: false
+    };
+    const command = ffmpegLoop(
+      path.join(__dirname, 'fixtures/user_video-30.mp4'),
+      opts
+    );
+    const { cmd, stream } = await start(command);
+    expect(cmd).to.match(/crop=12:24:0:0/);
+    expect(cmd).to.not.match(/stream_loop/);
+
+    const data = await pEvent(stream, 'data');
+    expect(data).to.be.ok();
+    command.kill();
+    await pEvent(command, 'error');
+  });
+
   it('allows you to NOT loop, but you can still go past the end.', async function () {
     this.timeout(5000);
     const opts = {
