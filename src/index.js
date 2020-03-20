@@ -14,11 +14,12 @@ ffmpeg.setFfmpegPath(require('ffmpeg-static'));
  * In place update filters to append filter.
  * @param {Array<object>} filters
  * @param {object} filter
+ * @param {string} [name]
  */
-function appendFilter (filters, filter) {
+function appendFilter (filters, filter, name) {
   const length = filters.length;
   if (length > 0) {
-    const lastPad = `f${length - 1}`;
+    const lastPad = `${name || filter.filter}${length - 1}`;
     last(filters).outputs = lastPad;
     filter.inputs = lastPad;
   }
@@ -54,13 +55,13 @@ module.exports = function (filename, opts) {
   const filters = [];
 
   if (loop) {
-    appendFilter(filters, { filter: 'concat', options: { n: 2, v: 1, a: 0 } });
+    appendFilter(filters, { filter: 'concat', options: { n: 2, v: 1, a: 0 } }, 'concat-inputs');
     appendFilter(filters, {
       filter: 'setpts',
       options: 'N/(FRAME_RATE*TB)'
-    });
+    }, 'redo-timecodes');
   // repeat last frame forever if not looping
-  } else appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } });
+  } else appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }, 'pad-at-end');
 
   const command = ffmpeg()
     // Using -ss and -stream_loop together does not work well, so we have a
