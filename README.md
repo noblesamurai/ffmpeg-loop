@@ -21,14 +21,12 @@ command.kill();
 
 ## API
 
-<a name="module_ffmpeg-loop"></a>
-
-## ffmpeg-loop
 <a name="exp_module_ffmpeg-loop--module.exports"></a>
 
 ### module.exports(filename) ⇒ ⏏
-Creates an infinitely looping readable stream from a video.
-Note: All crop dimensions are for the original video size (not the output size).
+Creates an ffmpeg command to loop a video.
+Note: All crop dimensions are for the original video size (not the output
+size).
 
 **Kind**: Exported function
 **Returns**: A fluent ffmpeg process - has pipe() method.
@@ -36,14 +34,15 @@ Note: All crop dimensions are for the original video size (not the output size).
 | Param | Type | Description |
 | --- | --- | --- |
 | filename | <code>string</code> | path to video |
-| opts.fps | <code>integer</code> |  |
-| opts.width | <code>integer</code> | output width |
-| opts.height | <code>integer</code> | output height |
-| opts.cropWidth | <code>integer</code> | crop width (width and height are required). |
 | opts.cropHeight | <code>integer</code> | crop height |
+| opts.cropWidth | <code>integer</code> | crop width (width and height are required). |
 | opts.cropX | <code>integer</code> | crop x (x and y are optional. If not set, the   default is the center position of the video). |
 | opts.cropY | <code>integer</code> | crop y |
-| opts.start | <code>float</code> | seek to this time before starting. Must be less than video length.|
+| opts.fps | <code>integer</code> |  |
+| opts.height | <code>integer</code> | output height |
+| opts.loop | <code>boolean</code> | whether to loop the source clip (defaults to true) |
+| opts.start | <code>float</code> | seek to this time before starting. Must be less |
+| opts.width | <code>integer</code> | output width than video length. |
 
 Note: To regenerate this section from the jsdoc run `npm run docs` and paste
 the output above.
