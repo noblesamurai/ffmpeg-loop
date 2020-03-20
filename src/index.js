@@ -11,6 +11,21 @@ const ow = require('ow');
 ffmpeg.setFfmpegPath(require('ffmpeg-static'));
 
 /**
+ * In place update filters to append filter.
+ * @param {Array<object>} filters
+ * @param {object} filter
+ */
+function appendFilter (filters, filter) {
+  const length = filters.length;
+  if (length > 0) {
+    const lastPad = `f${length - 1}`;
+    last(filters).outputs = lastPad;
+    filter.inputs = lastPad;
+  }
+  filters.push(filter);
+}
+
+/**
  * Creates an ffmpeg command to loop a video.
  * Note: All crop dimensions are for the original video size (not the output
  * size).
@@ -36,17 +51,17 @@ module.exports = function (filename, opts) {
     width: ow.number.integer
   }));
   const { fps, height, loop = true, start = 0, width } = opts;
-  const filters = loop ? [
-    { filter: 'concat', options: { n: 2, v: 1, a: 0 }, outputs: 'concat' },
-    {
+  const filters = [];
+
+  if (loop) {
+    appendFilter(filters, { filter: 'concat', options: { n: 2, v: 1, a: 0 } });
+    appendFilter(filters, {
       filter: 'setpts',
-      inputs: 'concat',
       options: 'N/(FRAME_RATE*TB)'
-    }
-  ] : [
-    // repeat last frame forever if not looping
-    { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }
-  ];
+    });
+  // repeat last frame forever if not looping
+  } else appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } });
+
   const command = ffmpeg()
     // Using -ss and -stream_loop together does not work well, so we have a
     // single non-looped version first to seek on.
@@ -61,13 +76,7 @@ module.exports = function (filename, opts) {
     .outputOption('-s', `${width}x${height}`)
     .outputOption('-r', fps);
   const crop = cropFilter(opts);
-  if (crop) {
-    if (filters.length) {
-      last(filters).outputs = 'toCrop';
-      crop.inputs = 'toCrop';
-    }
-    filters.push(crop);
-  }
+  if (crop) appendFilter(filters, crop);
   if (filters.length) command.complexFilter(filters);
   command.once('start', debug);
   return command;
