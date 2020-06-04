@@ -41,6 +41,9 @@ function appendFilter (filters, filter, name) {
  * @param {integer} opts.height - output height
  * @param {boolean} opts.loop - whether to loop the source clip (defaults to true)
  * @param {float} opts.start - seek to this time before starting. Must be less
+ * @param {float} opts.inputDuration - if set we can use this to make sure we
+ *   don't attempt to start after the end of the input file (ie. we can loop or
+ *   repeat the last frame correctly rather than seg faulting).
  * @param {integer} opts.width - output width
  * than video length.
  * @returns A fluent ffmpeg process - has pipe() method.
@@ -51,8 +54,10 @@ module.exports = function (filename, opts) {
     height: ow.number.integer,
     width: ow.number.integer
   }));
-  const { fps, height, loop = true, start = 0, width } = opts;
+  const { fps, height, loop = true, start = 0, inputDuration = -1, width } = opts;
   const filters = [];
+
+  const command = ffmpeg().input(filename);
 
   if (loop) {
     appendFilter(filters, { filter: 'concat', options: { n: 2, v: 1, a: 0 } }, 'concat-inputs');
@@ -60,15 +65,25 @@ module.exports = function (filename, opts) {
       filter: 'setpts',
       options: 'N/(FRAME_RATE*TB)'
     }, 'redo-timecodes');
-  // repeat last frame forever if not looping
-  } else appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }, 'pad-at-end');
-
-  const command = ffmpeg()
     // Using -ss and -stream_loop together does not work well, so we have a
     // single non-looped version first to seek on.
-    .input(filename)
-    .inputOption('-ss', start);
-  if (loop) command.input(filename).inputOption('-stream_loop', -1);
+    command.input(filename); // then a second looped version.
+    command.inputOption('-ss', inputDuration > 0 ? start % inputDuration : start);
+    command.inputOption('-stream_loop', -1);
+  } else {
+    // Input start time must be less than the file duration otherwise we segfault. We could just
+    // set the output start time but that requires going through the entire input video which is
+    // slow. Instead we make sure we start at least 1s before the end of the video and set the
+    // output start time to somewhere between 0 and 1. <1 for where start is before the input
+    // duration but only just up to 1 where we can just repeat the last frame until we are done.
+    const startBeforeEnd = inputDuration > 0 ? Math.max(0, Math.min(start, inputDuration - 1)) : start;
+    command.inputOption('-ss', startBeforeEnd);
+    if (startBeforeEnd < start) command.outputOption('-ss', Math.min(1, start - startBeforeEnd));
+
+    // repeat last frame forever if not looping
+    appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }, 'pad-at-end');
+  }
+
   command
     .noAudio()
     .outputFormat('rawvideo')
