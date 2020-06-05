@@ -7,6 +7,7 @@ const debug = require('debug')('ffmpeg-loop');
 const ffmpeg = require('fluent-ffmpeg');
 const last = require('lodash.last');
 const ow = require('ow');
+const round = require('lodash.round');
 
 ffmpeg.setFfmpegPath(require('ffmpeg-static'));
 
@@ -60,9 +61,10 @@ module.exports = function (filename, opts) {
   const command = ffmpeg().input(filename);
 
   if (loop) {
+    const inputStart = inputDuration > 0 ? start % inputDuration : start;
     // Using -ss and -stream_loop together does not work well, so we have a
     // single non-looped version first to seek on.
-    command.inputOption('-ss', inputDuration > 0 ? start % inputDuration : start);
+    command.inputOption('-ss', round(inputStart, 6)); // round so we don't get any e-X values.
     // then a second looped version.
     command.input(filename).inputOption('-stream_loop', -1);
 
@@ -78,8 +80,11 @@ module.exports = function (filename, opts) {
     // output start time to somewhere between 0 and 1. <1 for where start is before the input
     // duration but only just up to 1 where we can just repeat the last frame until we are done.
     const startBeforeEnd = inputDuration > 0 ? Math.max(0, Math.min(start, inputDuration - 1)) : start;
-    command.inputOption('-ss', startBeforeEnd);
-    if (startBeforeEnd < start) command.outputOption('-ss', Math.min(1, start - startBeforeEnd));
+    command.inputOption('-ss', round(startBeforeEnd, 6));
+    if (startBeforeEnd < start) {
+      const outputStart = Math.min(1, start - startBeforeEnd);
+      command.outputOption('-ss', round(outputStart, 6));
+    }
 
     // repeat last frame forever if not looping
     appendFilter(filters, { filter: 'tpad', options: { stop: -1, stop_mode: 'clone' } }, 'pad-at-end');
