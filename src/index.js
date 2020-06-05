@@ -60,16 +60,17 @@ module.exports = function (filename, opts) {
   const command = ffmpeg().input(filename);
 
   if (loop) {
+    // Using -ss and -stream_loop together does not work well, so we have a
+    // single non-looped version first to seek on.
+    command.inputOption('-ss', inputDuration > 0 ? start % inputDuration : start);
+    // then a second looped version.
+    command.input(filename).inputOption('-stream_loop', -1);
+
     appendFilter(filters, { filter: 'concat', options: { n: 2, v: 1, a: 0 } }, 'concat-inputs');
     appendFilter(filters, {
       filter: 'setpts',
       options: 'N/(FRAME_RATE*TB)'
     }, 'redo-timecodes');
-    // Using -ss and -stream_loop together does not work well, so we have a
-    // single non-looped version first to seek on.
-    command.input(filename); // then a second looped version.
-    command.inputOption('-ss', inputDuration > 0 ? start % inputDuration : start);
-    command.inputOption('-stream_loop', -1);
   } else {
     // Input start time must be less than the file duration otherwise we segfault. We could just
     // set the output start time but that requires going through the entire input video which is
