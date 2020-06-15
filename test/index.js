@@ -92,7 +92,8 @@ describe('ffmpeg loop', function () {
       height: 28,
       loop: false,
       width: 50,
-      start: 29.9
+      start: 29.9,
+      inputDuration: 30 // input duration must be specified for this to work.
     };
     const command = ffmpegLoop(
       path.join(__dirname, 'fixtures/user_video-30.mp4'),
@@ -109,5 +110,75 @@ describe('ffmpeg loop', function () {
     expect(data).to.be.ok();
     command.kill();
     await pEvent(command, 'error');
+  });
+
+  it('it should still work if start time is after the end of the input video (looping)', async function () {
+    this.timeout(5000);
+    const opts = {
+      fps: 30,
+      height: 28,
+      loop: true,
+      width: 50,
+      start: 30,
+      inputDuration: 30 // input duration must be specified for this to work.
+    };
+    const command = ffmpegLoop(
+      path.join(__dirname, 'fixtures/user_video-30.mp4'),
+      opts
+    );
+
+    const { cmd, stream } = await start(command);
+    expect(cmd).to.match(/stream_loop/);
+
+    for (let i = 0; i < 100; i++) {
+      await pEvent(stream, 'data');
+    }
+    const data = await pEvent(stream, 'data');
+    expect(data).to.be.ok();
+    command.kill();
+    await pEvent(command, 'error');
+  });
+
+  it('should still work if start time is after the end of the input video (NOT looping)', async function () {
+    this.timeout(5000);
+    const opts = {
+      fps: 30,
+      height: 28,
+      loop: false,
+      width: 50,
+      start: 30,
+      inputDuration: 30 // input duration must be specified for this to work.
+    };
+    const command = ffmpegLoop(
+      path.join(__dirname, 'fixtures/user_video-30.mp4'),
+      opts
+    );
+
+    const { cmd, stream } = await start(command);
+    expect(cmd).to.not.match(/stream_loop/);
+
+    for (let i = 0; i < 100; i++) {
+      await pEvent(stream, 'data');
+    }
+    const data = await pEvent(stream, 'data');
+    expect(data).to.be.ok();
+    command.kill();
+    await pEvent(command, 'error');
+  });
+
+  it('should throw if start is set without input duration', function () {
+    this.timeout(5000);
+    const opts = {
+      fps: 30,
+      height: 28,
+      loop: false,
+      width: 50,
+      start: 5
+    };
+    const command = () => ffmpegLoop(
+      path.join(__dirname, 'fixtures/user_video-30.mp4'),
+      opts
+    );
+    expect(command).to.throw();
   });
 });

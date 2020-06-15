@@ -42,6 +42,7 @@ size).
 | opts.height | <code>integer</code> | output height |
 | opts.loop | <code>boolean</code> | whether to loop the source clip (defaults to true) |
 | opts.start | <code>float</code> | seek to this time before starting. Must be less |
+| opts.inputDuration | <code>float</code> | if set we can use this to make sure we don't attempt to start after the end of the input file (ie. we can loop or repeat the last frame correctly rather than seg faulting). |
 | opts.width | <code>integer</code> | output width than video length. |
 
 Note: To regenerate this section from the jsdoc run `npm run docs` and paste
